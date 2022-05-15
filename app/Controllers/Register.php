@@ -43,6 +43,35 @@ class Register extends ResourceController
     }
 
     /**
+     * Return the properties of a resource object
+     *
+     * @return mixed
+     */
+    public function userLogin()
+    {
+        $rules = [
+            'phoneNumber' => 'required',
+            'password' => 'required'
+        ];
+
+        if (!$this->validate($rules)) {
+            return $this->fail($this->validator->getErrors());
+        }
+
+        $DB = \Config\Database::connect();
+        $queryBuilder = $DB->table('register');
+        $condition = array(
+            'phoneNumber' => $this->request->getVar('phoneNumber'),
+            'password' => $this->request->getVar('password')
+        );
+        $data = $queryBuilder->select()->where($condition)->get()->getResult('object');
+        if (empty($data)) {
+            return $this->failNotFound("Please enter correct username and password");
+        }
+        return $this->respond($data);
+    }
+
+    /**
      * Create a new resource object, from "posted" parameters
      *
      * @return mixed
@@ -74,6 +103,13 @@ class Register extends ResourceController
             ];
 
             $model = new Register_user();
+
+            $DB = \Config\Database::connect();
+            $queryBuilder = $DB->table('register');
+            $dataExists = $queryBuilder->select('phoneNumber')->where('phoneNumber', $data['phoneNumber'])->get()->getResult();
+            if(!empty($dataExists)) {
+                return $this->failResourceExists('Phone number is already exist');
+            }
             $model->save($data);
             return $this->respondCreated($data);
         }
@@ -87,7 +123,7 @@ class Register extends ResourceController
     public function updateUser($id = null)
     {
         //
-        
+
         //
         $rules = [
             'fname' => 'required',
@@ -97,10 +133,10 @@ class Register extends ResourceController
             'subDivision' => 'required',
             'section' => 'required',
         ];
-        
+
         if (!$id) {
             return $this->fail('User id is required!');
-        } else if(!$this->validate($rules)) {
+        } else if (!$this->validate($rules)) {
             return $this->fail($this->validator->getErrors());
         } else {
             $data = [
@@ -112,7 +148,7 @@ class Register extends ResourceController
                 'section' => $this->request->getVar('section'),
             ];
 
-            if($this->request->getVar('password')) {
+            if ($this->request->getVar('password')) {
                 $data['password'] = $this->request->getVar('password');
             }
 

@@ -35,6 +35,7 @@ $routes->get('/', 'Home::index');
 $routes->post('/create', 'Register::create');
 $routes->get('/getuser', 'Register::getUser');
 $routes->post('/updateuser', 'Register::updateUser');
+$routes->post('/userlogin', 'Register::userLogin');
 $routes->get('/deleteuser', 'Register::deleteuser');
 $routes->get('/division', 'Division');
 $routes->get('/getsubdivisions', 'Division::getSubDivisions');
