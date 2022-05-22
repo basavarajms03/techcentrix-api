@@ -35,3 +35,5 @@ $app       = require realpath($bootstrap) ?: $bootstrap;
  * up the engines and make this app do its thang.
  */
 $app->run();
+
+?>

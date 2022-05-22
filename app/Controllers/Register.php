@@ -17,6 +17,18 @@ class Register extends ResourceController
     public function index()
     {
         //
+        return view('worker_registration');
+    }
+
+    public function updateWorker() {
+        echo view('update_worker');
+    }
+
+    public function createuser() {
+        echo view('create_worker');
+    }
+
+    public function getAllUser() {
         $model = new Register_user();
         $data = $model->findAll();
         return $this->respond($data);
@@ -49,26 +61,56 @@ class Register extends ResourceController
      */
     public function userLogin()
     {
-        $rules = [
-            'phoneNumber' => 'required',
-            'password' => 'required'
-        ];
+        if ($this->request->getVar('type') === 'admin') {
+            if (
+                $this->request->getVar('phoneNumber') === 'admin'
+                && $this->request->getVar('password') === 'admin'
+            ) {
+                return $this->respond([
+                    'status' => 200,
+                    'description' => [
+                        'message' => 'admin Logged in successfully!',
+                        'errroMessage' => ''
+                    ]
+                ]);
+            } else {
+                return $this->respond([
+                    'status' => 201,
+                    'description' => [
+                        'message' => 'Please enter the correct username and password!',
+                        'errroMessage' => ''
+                    ]
+                ]);
+            }
+        } else {
+            $rules = [
+                'phoneNumber' => 'required',
+                'password' => 'required'
+            ];
 
-        if (!$this->validate($rules)) {
-            return $this->fail($this->validator->getErrors());
-        }
+            if (!$this->validate($rules)) {
+                return $this->fail($this->validator->getErrors());
+            }
 
-        $DB = \Config\Database::connect();
-        $queryBuilder = $DB->table('register');
-        $condition = array(
-            'phoneNumber' => $this->request->getVar('phoneNumber'),
-            'password' => $this->request->getVar('password')
-        );
-        $data = $queryBuilder->select()->where($condition)->get()->getResult('object');
-        if (empty($data)) {
-            return $this->failNotFound("Please enter correct username and password");
+            $DB = \Config\Database::connect();
+            $queryBuilder = $DB->table('register');
+            $condition = array(
+                'phoneNumber' => $this->request->getVar('phoneNumber'),
+                'password' => $this->request->getVar('password')
+            );
+            $data = $queryBuilder->select()->where($condition)->get()->getResult('object');
+            if (empty($data)) {
+                return $this->failNotFound("Please enter correct username and password");
+            }
+            return $this->respond([
+                'status' => 200,
+                'result' => $data,
+                'description' => [
+                    'message' => 'Logged in successfully!',
+                    'errroMessage' => ''
+                ]
+            ]);
         }
-        return $this->respond($data);
     }
 
     /**
@@ -107,7 +149,7 @@ class Register extends ResourceController
             $DB = \Config\Database::connect();
             $queryBuilder = $DB->table('register');
             $dataExists = $queryBuilder->select('phoneNumber')->where('phoneNumber', $data['phoneNumber'])->get()->getResult();
-            if(!empty($dataExists)) {
+            if (!empty($dataExists)) {
                 return $this->failResourceExists('Phone number is already exist');
             }
             $model->save($data);

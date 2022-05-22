@@ -40,6 +40,11 @@ $routes->get('/deleteuser', 'Register::deleteuser');
 $routes->get('/division', 'Division');
 $routes->get('/getsubdivisions', 'Division::getSubDivisions');
 $routes->get('/getsections', 'Division::getSections');
+$routes->post('/createbreakdownpoints', 'BreakdownPoints::createBreakDownPoints');
+$routes->post('/updatebreakdownpoints', 'BreakdownPoints::updatebreakdownpoints');
+$routes->get('/getbreakdownpoint', 'BreakdownPoints::getBreakDownPoint');
+$routes->get('/getAllBreakDownPoints', 'BreakdownPoints::getallbreakdownpoints');
+$routes->get('/getalluser', 'BreakdownPoints::getAllUser');
 
 /*
  * --------------------------------------------------------------------
