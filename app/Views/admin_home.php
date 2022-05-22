@@ -49,7 +49,7 @@
                     <a class="nav-link" href="worker_registration">Worker Registration</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?php echo site_url('breakdownpoints') ?>">Breakdown Points</a>
+                    <a class="nav-link" href="<?php echo site_url('BreakdownPoints') ?>">Breakdown Points</a>
                 </li>
             </ul>
         </div>
